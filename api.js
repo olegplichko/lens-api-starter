@@ -317,6 +317,178 @@ export const getPublicationsById = `
         address
     }
 
+    fragment CollectModuleFields on CollectModule {
+        __typename
+        ... on FreeCollectModuleSettings {
+            type
+            followerOnly
+            contractAddress
+        }
+        ... on FeeCollectModuleSettings {
+            type
+            amount {
+                asset {
+                    ...Erc20Fields
+                }
+                value
+            }
+            recipient
+            referralFee
+        }
+        ... on LimitedFeeCollectModuleSettings {
+            type
+            collectLimit
+            amount {
+                asset {
+                    ...Erc20Fields
+                }
+                value
+            }
+            recipient
+            referralFee
+        }
+        ... on LimitedTimedFeeCollectModuleSettings {
+            type
+            collectLimit
+            amount {
+                asset {
+                    ...Erc20Fields
+                }
+                value
+            }
+            recipient
+            referralFee
+            endTimestamp
+        }
+        ... on RevertCollectModuleSettings {
+            type
+        }
+        ... on TimedFeeCollectModuleSettings {
+            type
+            amount {
+            asset {
+                ...Erc20Fields
+            }
+            value
+            }
+            recipient
+            referralFee
+            endTimestamp
+        }
+    }
+      
+    fragment PostFields on Post {
+        id
+        profile {
+            ...ProfileFields
+        }
+        stats {
+            ...PublicationStatsFields
+        }
+        metadata {
+            ...MetadataOutputFields
+        }
+        createdAt
+        collectModule {
+            ...CollectModuleFields
+        }
+        referenceModule {
+            ... on FollowOnlyReferenceModuleSettings {
+                type
+            }
+        }
+        appId
+        hidden
+        reaction(request: null)
+        mirrors(by: null)
+        hasCollectedByMe
+    }
+      
+    fragment MirrorBaseFields on Mirror {
+        id
+        profile {
+            ...ProfileFields
+        }
+        stats {
+            ...PublicationStatsFields
+        }
+        metadata {
+            ...MetadataOutputFields
+        }
+        createdAt
+        collectModule {
+            ...CollectModuleFields
+        }
+        referenceModule {
+            ... on FollowOnlyReferenceModuleSettings {
+                type
+            }
+        }
+        appId
+        hidden
+        reaction(request: null)
+        hasCollectedByMe
+    }
+      
+    fragment MirrorFields on Mirror {
+        ...MirrorBaseFields
+        mirrorOf {
+            ... on Post {
+                ...PostFields
+            }
+            ... on Comment {
+                ...CommentFields
+            }
+        }
+    }
+      
+    fragment CommentBaseFields on Comment {
+        id
+        profile {
+            ...ProfileFields
+        }
+        stats {
+            ...PublicationStatsFields
+        }
+        metadata {
+            ...MetadataOutputFields
+        }
+        createdAt
+        collectModule {
+            ...CollectModuleFields
+        }
+        referenceModule {
+            ... on FollowOnlyReferenceModuleSettings {
+                type
+            }
+        }
+        appId
+        hidden
+        reaction(request: null)
+        mirrors(by: null)
+        hasCollectedByMe
+    }
+      
+    fragment CommentFields on Comment {
+        ...CommentBaseFields
+        mainPost {
+            ... on Post {
+                ...PostFields
+            }
+            ... on Mirror {
+                ...MirrorBaseFields
+                mirrorOf {
+                    ... on Post {
+                    ...PostFields
+                    }
+                    ... on Comment {
+                    ...CommentMirrorOfFields
+                    }
+                }
+            }
+        }
+    }
+      
     fragment CommentMirrorOfFields on Comment {
         ...CommentBaseFields
         mainPost {
