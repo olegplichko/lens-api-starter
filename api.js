@@ -239,12 +239,10 @@ export const getPublicationsById = `
         }
         coverPicture {
             ... on NftImage {
-                contractAddress {
-                    contractAddress
-                    tokenId
-                    uri
-                    verified
-                }
+                contractAddress
+                tokenId
+                uri
+                verified
             }
             ... on MediaSet {
                 original {

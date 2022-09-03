@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export default function Profile() {
     const [profile, setProfile] = useState();
-    const [pubs, setPubs] = useState();
+    const [pubs, setPubs] = useState([]);
     const router = useRouter();
     const { id } = router.query;
 
@@ -25,7 +25,7 @@ export default function Profile() {
 
             const publications = await client.query(getPublicationsById, { id }).toPromise();
             console.log("PUBS!", publications);
-            setPubs(publications.data.publication.items);
+            setPubs(publications.data.publications.items);
         } catch(error) {
             console.log("ERROR:", error);
         }
@@ -80,7 +80,7 @@ export default function Profile() {
                             <p className="mb-4">{profile.bio}</p>
                             {/* Add connect and follow buttons here */}
                             </div>
-                            {pubs.lenght > 0 && (
+                            {pubs.length > 0 && (
                                 <div className="border-t-2 border-gray-100 my-8 py-8 flex flex-col space-y-8">
                                     {pubs.map((p, index) => (
                                         <div key={p.id}>
