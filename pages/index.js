@@ -7,6 +7,8 @@ import Head from "next/head";
 import HeroSection from "../components/HeroSection";
 
 export default function Home() {
+  const [profiles, setProfiles] = useState([]);
+
   useEffect(() => {
     fetchProfiles();
   }, []);
