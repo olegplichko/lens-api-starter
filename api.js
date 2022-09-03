@@ -175,3 +175,31 @@ export const getProfileById = `
         }
     }
 `
+
+export const getPublicationsById = `
+    query Publications ($id: ProfileId!) {
+        publications(request: {
+            profileId: $id,
+            publicationTypes: [POST, COMMENT, MIRROR],
+            limit: 10
+        }) {
+            items {
+                __typename
+                ... on Post {
+                    ...PostFields
+                }
+                ... on Comment {
+                    ...CommentFields
+                }
+                ... on Mirror {
+                    ...MirrorFields
+                }
+            }
+            pageInfo {
+                prev
+                next
+                totalCount
+            }
+        }
+    }
+`
