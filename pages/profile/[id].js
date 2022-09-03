@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import ABI from "../../abi.json";
 import { client, getProfileById, getPublicationsById } from "../../api";
 import { useState, useEffect } from "react";
@@ -42,6 +43,21 @@ export default function Profile() {
         });
         console.log("accounts: ", accounts);
         setAccounts(accounts);
+    }
+
+    async function followUser() {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+        try {
+            const tx = await contract.follow([id], [0x0]);
+            await tx.wait();
+            console.log("Followed user successfully");
+        } catch (err) {
+            console.log("Failed to follow user due to", err);
+        }
     }
 
     return (
@@ -92,13 +108,23 @@ export default function Profile() {
                                 </p>
                             </div>
                             <p className="mb-4">{profile.bio}</p>
-                            <button
-                                onClick={connectWallet}
-                                type="button"
-                                className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-emerald-700 bg-emerald-100 hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-                            >
-                                Connect Wallet
-                            </button>
+                            {accounts ? (
+                                <button 
+                                    onClick={followUser}
+                                    type="button"
+                                    className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                                >
+                                    Follow {profile.handle}
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={connectWallet}
+                                    type="button"
+                                    className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-emerald-700 bg-emerald-100 hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                                >
+                                    Connect Wallet
+                                </button>
+                            )}
                             </div>
                             {pubs.length > 0 && (
                                 <div className="border-t-2 border-gray-100 my-8 py-8 flex flex-col space-y-8">
