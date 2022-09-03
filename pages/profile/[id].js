@@ -1,3 +1,4 @@
+import ABI from "../../abi.json";
 import { client, getProfileById, getPublicationsById } from "../../api";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -5,7 +6,11 @@ import Layout from "../../components/Layout";
 import Head from "next/head";
 import Image from "next/image";
 
+//lens contract address
+const CONTRACT_ADDRESS = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82"
+
 export default function Profile() {
+    const [accounts, setAccounts] = useState(null);
     const [profile, setProfile] = useState();
     const [pubs, setPubs] = useState([]);
     const router = useRouter();
@@ -30,6 +35,15 @@ export default function Profile() {
             console.log("ERROR:", error);
         }
     }
+
+    async function connectWallet() {
+        const accounts = await window.ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        console.log("accounts: ", accounts);
+        setAccounts(accounts);
+    }
+
     return (
         <Layout>
             <Head>
@@ -78,7 +92,13 @@ export default function Profile() {
                                 </p>
                             </div>
                             <p className="mb-4">{profile.bio}</p>
-                            {/* Add connect and follow buttons here */}
+                            <button
+                                onClick={connectWallet}
+                                type="button"
+                                className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-emerald-700 bg-emerald-100 hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                            >
+                                Connect Wallet
+                            </button>
                             </div>
                             {pubs.length > 0 && (
                                 <div className="border-t-2 border-gray-100 my-8 py-8 flex flex-col space-y-8">
